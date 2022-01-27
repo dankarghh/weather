@@ -1,0 +1,18 @@
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.location {
+  font-size: 1.5rem;
+}
+
+.main-temp {
+  font-size: 3rem;
+  margin-bottom: 0;
+}
+
+.weather {
+}
+
+.details {
+}
