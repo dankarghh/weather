@@ -7,7 +7,7 @@ body {
 }
 
 .main-temp {
-  font-size: 3rem;
+  font-size: 4rem;
   margin-bottom: 0;
 }
 
@@ -15,4 +15,15 @@ body {
 }
 
 .details {
+}
+
+.focus {
+  display: flex;
+  align-items: center;
+}
+.container {
+  border: solid 1px black;
+  width: fit-content;
+  padding: 1rem;
+  border-radius: 1rem;
 }

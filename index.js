@@ -6,28 +6,25 @@ const displayTemp = document.querySelector(".main-temp");
 const displayDetails = document.querySelector(".details");
 const displayWeather = document.querySelector(".weather");
 const displayIcon = document.querySelector(".icon");
+const img = document.querySelector("img");
+const errorMsg = document.querySelector(".error-container");
 
 async function getData() {
   const searchQuery = input.value;
-  await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&APPID=5d9558c98745f247d03ba46363f4043c&units=metric`,
-    { mode: "cors" }
-  )
-    .then(res => {
-      return res.json();
-    })
-    .then(data => {
-      console.log(data);
-      console.log(data.sys.country);
-      let weatherData = data;
-      return weatherData;
-    })
-    .then(weatherData => {
-      filterData(weatherData);
-    })
-    .catch(err => {
-      console.log("city not found");
-    });
+
+  try {
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&APPID=5d9558c98745f247d03ba46363f4043c&units=metric`,
+      { mode: "cors" }
+    );
+    const weatherData = await response.json();
+    console.log(weatherData);
+    errorMsg.textContent = "";
+
+    filterData(weatherData);
+  } catch (err) {
+    errorMsg.textContent = "Please search by City";
+  }
 }
 
 searchBtn.addEventListener("click", e => {
@@ -38,6 +35,7 @@ searchBtn.addEventListener("click", e => {
 });
 
 //function to take returned data and filter only whats needed and return object
+
 function filterData(weatherData) {
   let filteredData = {
     city: weatherData.name,
@@ -56,6 +54,8 @@ function render(filteredData) {
   displayLocation.textContent = `${filteredData.city}, ${filteredData.country}`;
   displayWeather.textContent = filteredData.weather;
 
+  img.src = `http://openweathermap.org/img/wn/${filteredData.icon}@2x.png`;
+
   displayTemp.textContent = Math.round(filteredData.temp) + "°C";
   displayDetails.textContent =
     "humidity: " +
@@ -65,3 +65,6 @@ function render(filteredData) {
     Math.round(filteredData.feelsLike) +
     "°C";
 }
+
+
+https://api.openweathermap.org/data/2.5/onecall?lat=-16.9167&lon=145.7667&exclude=current,minutely,hourly,alerts&appid=5d9558c98745f247d03ba46363f4043c
