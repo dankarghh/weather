@@ -79,5 +79,19 @@ button {
   border: none;
   font-size: 1rem;
   background-color: rgb(181, 145, 214);
-  border: solid 0.5px grey;
+  border: solid 0.5px rgb(181, 145, 214);
+}
+
+input:focus {
+  border: solid 2px grey;
+  outline: none;
+}
+.units {
+  padding-top: 0.5rem;
+}
+.active-units {
+  font-weight: 600;
+}
+.units {
+  cursor: pointer;
 }

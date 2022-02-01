@@ -12,10 +12,34 @@ const forecastContainer = document.querySelector(".forecast-container");
 const displayDate = document.querySelector(".date-main");
 const form = document.querySelector("form");
 const app = document.querySelector(".app");
+const unitsC = document.querySelector(".units-c");
+const unitsF = document.querySelector(".units-f");
+let activeUnits = unitsC;
+let searchQuery = "";
+
+//add listeners to units buttons so user can change units
+
+unitsF.addEventListener("click", e => {
+  if (activeUnits === unitsC) {
+    unitsF.classList.toggle("active-units");
+    unitsC.classList.toggle("active-units");
+    activeUnits = unitsF;
+    getData();
+  }
+});
+
+unitsC.addEventListener("click", e => {
+  if (activeUnits === unitsF) {
+    unitsF.classList.toggle("active-units");
+    unitsC.classList.toggle("active-units");
+    activeUnits = unitsC;
+    getData();
+  }
+});
 
 //initial api call to retrieve data
 async function getData() {
-  const searchQuery = input.value;
+  // searchQuery = input.value;
 
   try {
     const response = await fetch(
@@ -25,6 +49,7 @@ async function getData() {
     const weatherData = await response.json();
     console.log(weatherData);
     errorMsg.textContent = "";
+    input.classList.remove("error");
 
     filterData(weatherData);
   } catch (err) {
@@ -54,8 +79,10 @@ function filterData(weatherData) {
     country: weatherData.sys.country,
     weather: weatherData.weather[0].description,
     temp: weatherData.main.temp,
+    tempF: weatherData.main.temp * (9 / 5) + 32,
     humidity: weatherData.main.humidity,
     feelsLike: weatherData.main.feels_like,
+    feelsLikeF: weatherData.main.feels_like * (9 / 5) + 32,
     icon: weatherData.weather[0].icon,
   };
   render(filteredData);
@@ -74,14 +101,26 @@ function render(filteredData) {
 
   img.src = `http://openweathermap.org/img/wn/${filteredData.icon}@2x.png`;
 
-  displayTemp.textContent = Math.round(filteredData.temp) + "°C";
-  displayDetails.textContent =
-    "humidity: " +
-    Math.round(filteredData.humidity) +
-    "% | " +
-    "feels like " +
-    Math.round(filteredData.feelsLike) +
-    "°C";
+  if (activeUnits === unitsC) {
+    displayTemp.textContent = Math.round(filteredData.temp) + "°C";
+    displayDetails.textContent =
+      "humidity: " +
+      Math.round(filteredData.humidity) +
+      "% | " +
+      "feels like " +
+      Math.round(filteredData.feelsLike) +
+      "°C";
+  } else {
+    displayTemp.textContent =
+      Math.round(convertUnitsToF(Math.round(filteredData.temp))) + "°F";
+    displayDetails.textContent =
+      "humidity: " +
+      Math.round(filteredData.humidity) +
+      "% | " +
+      "feels like " +
+      Math.round(convertUnitsToF(Math.round(filteredData.feelsLike))) +
+      "°F";
+  }
 }
 
 //seperate function to get forecast data as needs additional inputs long and lat that aren't requested in original api call
@@ -172,9 +211,19 @@ function renderForecast(filteredForecast) {
     icon.src = `http://openweathermap.org/img/wn/${day.icon}@2x.png`;
     div.appendChild(icon);
 
-    const minMax = document.createElement("p");
-    minMax.textContent = `${day.min}° | ${day.max}°`;
-    div.appendChild(minMax);
+    if (activeUnits === unitsC) {
+      const minMax = document.createElement("p");
+      minMax.textContent = `${day.min}° | ${day.max}°`;
+      div.appendChild(minMax);
+    } else {
+      const minMax = document.createElement("p");
+      minMax.textContent =
+        Math.round(convertUnitsToF(day.min)) +
+        "° | " +
+        Math.round(convertUnitsToF(day.max)) +
+        "°";
+      div.appendChild(minMax);
+    }
   });
 }
 
@@ -184,3 +233,10 @@ function clearElement(element) {
     element.removeChild(element.firstChild);
   }
 }
+
+function convertUnitsToF(temp) {
+  temp = temp * (9 / 5) + 32;
+  return temp;
+}
+
+console.log(convertUnitsToF(10));
