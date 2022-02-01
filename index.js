@@ -39,8 +39,6 @@ unitsC.addEventListener("click", e => {
 
 //initial api call to retrieve data
 async function getData() {
-  // searchQuery = input.value;
-
   try {
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&APPID=5d9558c98745f247d03ba46363f4043c&units=metric`,
@@ -99,7 +97,9 @@ function render(filteredData) {
   displayWeather.textContent = filteredData.weather;
   displayDate.textContent = new Date(filteredData.dt * 1000).toUTCString();
 
-  img.src = `http://openweathermap.org/img/wn/${filteredData.icon}@2x.png`;
+  // img.src = `http://openweathermap.org/img/wn/${filteredData.icon}@2x.png`;
+
+  img.src = `img/${filteredData.icon}.png`;
 
   if (activeUnits === unitsC) {
     displayTemp.textContent = Math.round(filteredData.temp) + "°C";
@@ -208,7 +208,7 @@ function renderForecast(filteredForecast) {
     div.appendChild(dayOfWeek);
 
     const icon = document.createElement("img");
-    icon.src = `http://openweathermap.org/img/wn/${day.icon}@2x.png`;
+    icon.src = `img/${day.icon}.png`;
     div.appendChild(icon);
 
     if (activeUnits === unitsC) {
